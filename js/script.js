@@ -191,22 +191,26 @@ function inicializarCarrossel() {
   
   // Variáveis para controlar o carrossel
   let posicaoAtual = 0;
-  let itensPorPagina = 3; // Padrão para telas grandes
+  let itensPorPagina = 1; // Valor padrão
   
   // Função para atualizar o número de itens por página com base na largura da tela
   function atualizarItensPorPagina() {
     if (window.innerWidth <= 768) {
-      itensPorPagina = 1; // Telas pequenas (celular)
+      return 1; // Telas pequenas (celular)
     } else if (window.innerWidth <= 1024) {
-      itensPorPagina = 2; // Telas médias (tablet)
+      return 2; // Telas médias (tablet)
     } else {
-      itensPorPagina = 3; // Telas grandes (desktop)
+      return 3; // Telas grandes (desktop)
     }
-    return itensPorPagina;
   }
   
   // Inicializar o número de itens por página
   itensPorPagina = atualizarItensPorPagina();
+  
+  // Ajustar a largura do slide para acomodar todas as imagens
+  carrosselSlide.style.width = `${(100 / itensPorPagina) * imagens.length}%`;
+  
+  // Calcular o número total de páginas
   const totalPaginas = Math.ceil(imagens.length / itensPorPagina);
   
   // Função para mover o carrossel
@@ -217,8 +221,7 @@ function inicializarCarrossel() {
       posicaoAtual = (posicaoAtual - 1 + totalPaginas) % totalPaginas;
     }
     
-    const itemWidth = 100 / itensPorPagina;
-    const deslocamento = -posicaoAtual * itemWidth * itensPorPagina;
+    const deslocamento = -(posicaoAtual * (100 / totalPaginas));
     carrosselSlide.style.transform = `translateX(${deslocamento}%)`;
   }
   
@@ -231,8 +234,13 @@ function inicializarCarrossel() {
     const novoItensPorPagina = atualizarItensPorPagina();
     if (novoItensPorPagina !== itensPorPagina) {
       itensPorPagina = novoItensPorPagina;
-      posicaoAtual = 0; // Voltar para a primeira página
-      carrosselSlide.style.transform = 'translateX(0%)'; // Resetar a posição
+      
+      // Reajustar a largura do slide
+      carrosselSlide.style.width = `${(100 / itensPorPagina) * imagens.length}%`;
+      
+      // Voltar para a primeira página
+      posicaoAtual = 0;
+      carrosselSlide.style.transform = 'translateX(0%)';
     }
   });
 }
@@ -242,4 +250,34 @@ document.addEventListener('DOMContentLoaded', function() {
   inicializarMapa();
   inicializarBotaoTopo();
   inicializarCarrossel();
+});
+
+// Função para inicializar o menu responsivo
+function inicializarMenuResponsivo() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('nav');
+  
+  if (!menuToggle || !nav) return;
+  
+  menuToggle.addEventListener('click', () => {
+    nav.classList.toggle('active');
+  });
+  
+  // Fechar o menu ao clicar em um link
+  const links = nav.querySelectorAll('a');
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        nav.classList.remove('active');
+      }
+    });
+  });
+}
+
+// Adicionar a inicialização do menu responsivo ao carregamento da página
+document.addEventListener('DOMContentLoaded', function() {
+  inicializarMapa();
+  inicializarBotaoTopo();
+  inicializarCarrossel();
+  inicializarMenuResponsivo();
 });

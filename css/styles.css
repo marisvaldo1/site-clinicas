@@ -38,3 +38,46 @@ footer { background: #2c3e50; color: #fff; text-align: center; padding: 1em; mar
     line-height: 50px;
     display: block;
 }
+
+/* Estilos existentes permanecem... */
+
+/* Menu Responsivo */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 768px) {
+    header {
+        flex-wrap: wrap;
+    }
+    
+    .menu-toggle {
+        display: block;
+        order: 3;
+    }
+    
+    nav {
+        flex-basis: 100%;
+        order: 4;
+        display: none;
+    }
+    
+    nav.active {
+        display: block;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+    
+    nav ul li {
+        margin: 10px 0;
+    }
+}
