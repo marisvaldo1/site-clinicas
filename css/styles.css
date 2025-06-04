@@ -81,3 +81,29 @@ footer { background: #2c3e50; color: #fff; text-align: center; padding: 1em; mar
         margin: 10px 0;
     }
 }
+
+/* Estilos para a seção de contatos */
+.contatos-whatsapp p {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.icone-whatsapp {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.contatos-whatsapp a {
+    color: #25D366; /* Cor verde do WhatsApp */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contatos-whatsapp a:hover {
+    text-decoration: underline;
+}
+
+.contatos-whatsapp a:hover {
+    text-decoration: underline;
+}

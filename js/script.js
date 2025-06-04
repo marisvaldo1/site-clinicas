@@ -9,8 +9,6 @@ const estadosComClinicas = {
 
 // Função para inicializar o mapa quando o documento estiver carregado
 function inicializarMapa() {
-  console.log("Inicializando mapa...");
-  
   // Vamos trabalhar diretamente com o SVG que já está no HTML
   // em vez de tentar carregar um SVG externo
   const svgElement = document.querySelector('#mapaBrasil svg');
@@ -20,7 +18,7 @@ function inicializarMapa() {
     return;
   }
   
-  console.log("SVG encontrado, adicionando interatividade...");
+  // console.log("SVG encontrado, adicionando interatividade...");
   adicionarInteratividade(svgElement);
 }
 
@@ -42,16 +40,14 @@ function adicionarInteratividade(svgElement) {
 
   // Selecionar todos os estados (paths) do SVG
   const estados = svgElement.querySelectorAll('.state');
-  console.log(`Encontrados ${estados.length} estados no SVG`);
   
   estados.forEach(estado => {
     const uf = estado.id;
     if (!uf) {
-      console.warn("Estado sem ID encontrado, pulando...");
+      // console.warn("Estado sem ID encontrado, pulando...");
       return;
     }
     
-    console.log(`Processando estado: ${uf}`);
     const temClinica = estadosComClinicas[uf];
 
     // Definir cores iniciais
@@ -302,8 +298,6 @@ function injetarInformacoesVersao() {
     // Injetar informações no rodapé
     document.getElementById('versao').textContent = versao;
     document.getElementById('copyright').textContent = copyright;
-    document.getElementById('autor').textContent = autor;
-    document.getElementById('contato-autor').textContent = contatoAutor;
     
     // Atualizar o link de contato da clínica se necessário
     const contatoLink = document.querySelector('#contato a');
@@ -314,6 +308,15 @@ function injetarInformacoesVersao() {
     console.error("Arquivo de versão não carregado corretamente!");
   }
 }
+
+// Manter apenas uma chamada para o evento DOMContentLoaded (linhas 290-296)
+document.addEventListener('DOMContentLoaded', function() {
+  inicializarMapa();
+  inicializarBotaoTopo();
+  inicializarCarrossel();
+  inicializarMenuResponsivo();
+  injetarInformacoesVersao(); // Adicionar a nova função à inicialização
+});
 
 document.addEventListener('DOMContentLoaded', function() {
   inicializarMapa();
