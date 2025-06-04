@@ -210,8 +210,14 @@ function inicializarCarrossel() {
   // Ajustar a largura do slide para acomodar todas as imagens
   carrosselSlide.style.width = `${(100 / itensPorPagina) * imagens.length}%`;
   
+  // Ajustar a largura de cada item do carrossel
+  const itemWidth = 100 / imagens.length;
+  Array.from(carrosselSlide.querySelectorAll('.carrossel-item')).forEach(item => {
+    item.style.width = `${itemWidth}%`;
+  });
+  
   // Calcular o número total de páginas
-  const totalPaginas = Math.ceil(imagens.length / itensPorPagina);
+  const totalPaginas = imagens.length;
   
   // Função para mover o carrossel
   function moverCarrossel(direcao) {
@@ -221,7 +227,8 @@ function inicializarCarrossel() {
       posicaoAtual = (posicaoAtual - 1 + totalPaginas) % totalPaginas;
     }
     
-    const deslocamento = -(posicaoAtual * (100 / totalPaginas));
+    // Calcular o deslocamento baseado na posição atual
+    const deslocamento = -(posicaoAtual * (100 / imagens.length));
     carrosselSlide.style.transform = `translateX(${deslocamento}%)`;
   }
   
@@ -237,6 +244,12 @@ function inicializarCarrossel() {
       
       // Reajustar a largura do slide
       carrosselSlide.style.width = `${(100 / itensPorPagina) * imagens.length}%`;
+      
+      // Reajustar a largura de cada item
+      const itemWidth = 100 / imagens.length;
+      Array.from(carrosselSlide.querySelectorAll('.carrossel-item')).forEach(item => {
+        item.style.width = `${itemWidth}%`;
+      });
       
       // Voltar para a primeira página
       posicaoAtual = 0;
