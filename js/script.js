@@ -293,4 +293,32 @@ document.addEventListener('DOMContentLoaded', function() {
   inicializarBotaoTopo();
   inicializarCarrossel();
   inicializarMenuResponsivo();
+  injetarInformacoesVersao(); // Adicionar a nova função à inicialização
+});
+
+function injetarInformacoesVersao() {
+  // Verificar se as variáveis do arquivo versao.js estão disponíveis
+  if (typeof versao !== 'undefined') {
+    // Injetar informações no rodapé
+    document.getElementById('versao').textContent = versao;
+    document.getElementById('copyright').textContent = copyright;
+    document.getElementById('autor').textContent = autor;
+    document.getElementById('contato-autor').textContent = contatoAutor;
+    
+    // Atualizar o link de contato da clínica se necessário
+    const contatoLink = document.querySelector('#contato a');
+    if (contatoLink && typeof contatoClinica !== 'undefined') {
+      contatoLink.href = contatoClinica;
+    }
+  } else {
+    console.error("Arquivo de versão não carregado corretamente!");
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  inicializarMapa();
+  inicializarBotaoTopo();
+  inicializarCarrossel();
+  inicializarMenuResponsivo();
+  injetarInformacoesVersao(); // Adicionar a nova função à inicialização
 });
