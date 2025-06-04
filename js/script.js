@@ -127,3 +127,119 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Executa ao carregar a página
 document.addEventListener('DOMContentLoaded', inicializarMapa);
+
+// Função para inicializar o carrossel de imagens
+function inicializarCarrossel() {
+  const carrosselContainer = document.querySelector('.imagens-clinicas');
+  
+  if (!carrosselContainer) {
+    console.error("Container de imagens não encontrado!");
+    return;
+  }
+  
+  // Obter todas as imagens existentes
+  const imagens = Array.from(carrosselContainer.querySelectorAll('img'));
+  
+  if (imagens.length === 0) {
+    console.warn("Nenhuma imagem encontrada para o carrossel!");
+    return;
+  }
+  
+  // Criar a estrutura do carrossel
+  const carrosselWrapper = document.createElement('div');
+  carrosselWrapper.className = 'carrossel-container';
+  
+  const carrosselSlide = document.createElement('div');
+  carrosselSlide.className = 'carrossel-slide';
+  
+  // Adicionar cada imagem ao slide do carrossel
+  imagens.forEach(img => {
+    const item = document.createElement('div');
+    item.className = 'carrossel-item';
+    
+    // Clonar a imagem para não perder a original
+    const novaImg = document.createElement('img');
+    novaImg.src = img.src;
+    novaImg.alt = img.alt || 'Imagem da clínica';
+    
+    item.appendChild(novaImg);
+    carrosselSlide.appendChild(item);
+  });
+  
+  carrosselWrapper.appendChild(carrosselSlide);
+  
+  // Adicionar controles do carrossel
+  const controles = document.createElement('div');
+  controles.className = 'carrossel-controles';
+  
+  const botaoAnterior = document.createElement('button');
+  botaoAnterior.className = 'carrossel-botao';
+  botaoAnterior.textContent = 'Anterior';
+  
+  const botaoProximo = document.createElement('button');
+  botaoProximo.className = 'carrossel-botao';
+  botaoProximo.textContent = 'Próximo';
+  
+  controles.appendChild(botaoAnterior);
+  controles.appendChild(botaoProximo);
+  
+  carrosselWrapper.appendChild(controles);
+  
+  // Substituir o conteúdo original pelo carrossel
+  carrosselContainer.innerHTML = '';
+  carrosselContainer.appendChild(carrosselWrapper);
+  
+  // Variáveis para controlar o carrossel
+  let posicaoAtual = 0;
+  let itensPorPagina = 3; // Padrão para telas grandes
+  
+  // Função para atualizar o número de itens por página com base na largura da tela
+  function atualizarItensPorPagina() {
+    if (window.innerWidth <= 768) {
+      itensPorPagina = 1; // Telas pequenas (celular)
+    } else if (window.innerWidth <= 1024) {
+      itensPorPagina = 2; // Telas médias (tablet)
+    } else {
+      itensPorPagina = 3; // Telas grandes (desktop)
+    }
+    return itensPorPagina;
+  }
+  
+  // Inicializar o número de itens por página
+  itensPorPagina = atualizarItensPorPagina();
+  const totalPaginas = Math.ceil(imagens.length / itensPorPagina);
+  
+  // Função para mover o carrossel
+  function moverCarrossel(direcao) {
+    if (direcao === 'proximo') {
+      posicaoAtual = (posicaoAtual + 1) % totalPaginas;
+    } else {
+      posicaoAtual = (posicaoAtual - 1 + totalPaginas) % totalPaginas;
+    }
+    
+    const itemWidth = 100 / itensPorPagina;
+    const deslocamento = -posicaoAtual * itemWidth * itensPorPagina;
+    carrosselSlide.style.transform = `translateX(${deslocamento}%)`;
+  }
+  
+  // Adicionar eventos aos botões
+  botaoAnterior.addEventListener('click', () => moverCarrossel('anterior'));
+  botaoProximo.addEventListener('click', () => moverCarrossel('proximo'));
+  
+  // Ajustar o carrossel quando a janela for redimensionada
+  window.addEventListener('resize', () => {
+    const novoItensPorPagina = atualizarItensPorPagina();
+    if (novoItensPorPagina !== itensPorPagina) {
+      itensPorPagina = novoItensPorPagina;
+      posicaoAtual = 0; // Voltar para a primeira página
+      carrosselSlide.style.transform = 'translateX(0%)'; // Resetar a posição
+    }
+  });
+}
+
+// Adicionar a inicialização do carrossel ao carregamento da página
+document.addEventListener('DOMContentLoaded', function() {
+  inicializarMapa();
+  inicializarBotaoTopo();
+  inicializarCarrossel();
+});
