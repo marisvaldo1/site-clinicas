@@ -141,9 +141,12 @@ function inicializarCarrossel() {
     return;
   }
   
-  // Criar a estrutura do carrossel
+  // Criar a estrutura do carrossel moderno
   const carrosselWrapper = document.createElement('div');
   carrosselWrapper.className = 'carrossel-container';
+  
+  const carrosselInner = document.createElement('div');
+  carrosselInner.className = 'carrossel-wrapper';
   
   const carrosselSlide = document.createElement('div');
   carrosselSlide.className = 'carrossel-slide';
@@ -153,7 +156,6 @@ function inicializarCarrossel() {
     const item = document.createElement('div');
     item.className = 'carrossel-item';
     
-    // Clonar a imagem para não perder a original
     const novaImg = document.createElement('img');
     novaImg.src = img.src;
     novaImg.alt = img.alt || 'Imagem da clínica';
@@ -162,104 +164,152 @@ function inicializarCarrossel() {
     carrosselSlide.appendChild(item);
   });
   
-  carrosselWrapper.appendChild(carrosselSlide);
+  carrosselInner.appendChild(carrosselSlide);
   
-  // Adicionar controles do carrossel
-  const controles = document.createElement('div');
-  controles.className = 'carrossel-controles';
-  
+  // Criar navegação por setas
   const botaoAnterior = document.createElement('button');
-  botaoAnterior.className = 'carrossel-botao';
-  botaoAnterior.textContent = 'Anterior';
+  botaoAnterior.className = 'carrossel-nav prev';
+  botaoAnterior.innerHTML = '←';
+  botaoAnterior.setAttribute('aria-label', 'Imagem anterior');
   
   const botaoProximo = document.createElement('button');
-  botaoProximo.className = 'carrossel-botao';
-  botaoProximo.textContent = 'Próximo';
+  botaoProximo.className = 'carrossel-nav next';
+  botaoProximo.innerHTML = '→';
+  botaoProximo.setAttribute('aria-label', 'Próxima imagem');
   
-  controles.appendChild(botaoAnterior);
-  controles.appendChild(botaoProximo);
+  carrosselInner.appendChild(botaoAnterior);
+  carrosselInner.appendChild(botaoProximo);
   
-  carrosselWrapper.appendChild(controles);
+  // Criar indicadores (pontos)
+  const indicadores = document.createElement('div');
+  indicadores.className = 'carrossel-indicators';
+  
+  imagens.forEach((_, index) => {
+    const indicador = document.createElement('button');
+    indicador.className = 'carrossel-indicator';
+    if (index === 0) indicador.classList.add('active');
+    indicador.setAttribute('aria-label', `Ir para imagem ${index + 1}`);
+    indicador.addEventListener('click', () => irParaSlide(index));
+    indicadores.appendChild(indicador);
+  });
+  
+  carrosselInner.appendChild(indicadores);
+  
+  // Criar contador
+  const contador = document.createElement('div');
+  contador.className = 'carrossel-counter';
+  contador.textContent = `1 / ${imagens.length}`;
+  
+  carrosselInner.appendChild(contador);
+  
+  carrosselWrapper.appendChild(carrosselInner);
   
   // Substituir o conteúdo original pelo carrossel
   carrosselContainer.innerHTML = '';
   carrosselContainer.appendChild(carrosselWrapper);
   
-  // Variáveis para controlar o carrossel
-  let posicaoAtual = 0;
-  let itensPorPagina = 1; // Valor padrão
+  // Variáveis de controle
+  let slideAtual = 0;
+  let autoPlayInterval;
   
-  // Função para atualizar o número de itens por página com base na largura da tela
-  function atualizarItensPorPagina() {
-    if (window.innerWidth <= 768) {
-      return 1; // Telas pequenas (celular)
-    } else if (window.innerWidth <= 1024) {
-      return 2; // Telas médias (tablet)
-    } else {
-      return 3; // Telas grandes (desktop)
+  // Função para atualizar indicadores
+  function atualizarIndicadores() {
+    const todosIndicadores = indicadores.querySelectorAll('.carrossel-indicator');
+    todosIndicadores.forEach((indicador, index) => {
+      indicador.classList.toggle('active', index === slideAtual);
+    });
+  }
+  
+  // Função para atualizar contador
+  function atualizarContador() {
+    contador.textContent = `${slideAtual + 1} / ${imagens.length}`;
+  }
+  
+  // Função para ir para um slide específico
+  function irParaSlide(index) {
+    slideAtual = index;
+    const deslocamento = -slideAtual * 100;
+    carrosselSlide.style.transform = `translateX(${deslocamento}%)`;
+    atualizarIndicadores();
+    atualizarContador();
+    reiniciarAutoPlay();
+  }
+  
+  // Função para próximo slide
+  function proximoSlide() {
+    const proximo = (slideAtual + 1) % imagens.length;
+    irParaSlide(proximo);
+  }
+  
+  // Função para slide anterior
+  function slideAnterior() {
+    const anterior = (slideAtual - 1 + imagens.length) % imagens.length;
+    irParaSlide(anterior);
+  }
+  
+  // Função para iniciar autoplay
+  function iniciarAutoPlay() {
+    autoPlayInterval = setInterval(proximoSlide, 6000); // Troca a cada 6 segundos
+  }
+  
+  // Função para parar autoplay
+  function pararAutoPlay() {
+    if (autoPlayInterval) {
+      clearInterval(autoPlayInterval);
     }
   }
   
-  // Inicializar o número de itens por página
-  itensPorPagina = atualizarItensPorPagina();
+  // Função para reiniciar autoplay
+  function reiniciarAutoPlay() {
+    pararAutoPlay();
+    iniciarAutoPlay();
+  }
   
-  // Ajustar a largura do slide para acomodar todas as imagens
-  carrosselSlide.style.width = `${(100 / itensPorPagina) * imagens.length}%`;
+  // Eventos dos botões de navegação
+  botaoAnterior.addEventListener('click', slideAnterior);
+  botaoProximo.addEventListener('click', proximoSlide);
   
-  // Ajustar a largura de cada item do carrossel
-  const itemWidth = 100 / imagens.length;
-  Array.from(carrosselSlide.querySelectorAll('.carrossel-item')).forEach(item => {
-    item.style.width = `${itemWidth}%`;
+  // Pausar autoplay ao passar o mouse
+  carrosselWrapper.addEventListener('mouseenter', pararAutoPlay);
+  carrosselWrapper.addEventListener('mouseleave', iniciarAutoPlay);
+  
+  // Navegação por teclado
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') slideAnterior();
+    if (e.key === 'ArrowRight') proximoSlide();
   });
   
-  // Calcular o número total de páginas
-  const totalPaginas = imagens.length;
+  // Suporte a gestos touch para mobile
+  let startX = 0;
+  let endX = 0;
   
-  // Função para mover o carrossel
-  function moverCarrossel(direcao) {
-    if (direcao === 'proximo') {
-      posicaoAtual = (posicaoAtual + 1) % totalPaginas;
-    } else {
-      posicaoAtual = (posicaoAtual - 1 + totalPaginas) % totalPaginas;
+  carrosselWrapper.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    pararAutoPlay();
+  });
+  
+  carrosselWrapper.addEventListener('touchmove', (e) => {
+    endX = e.touches[0].clientX;
+  });
+  
+  carrosselWrapper.addEventListener('touchend', () => {
+    const deltaX = startX - endX;
+    const threshold = 50; // Mínimo de 50px para detectar swipe
+    
+    if (Math.abs(deltaX) > threshold) {
+      if (deltaX > 0) {
+        proximoSlide(); // Swipe left - próximo
+      } else {
+        slideAnterior(); // Swipe right - anterior
+      }
     }
     
-    // Calcular o deslocamento baseado na posição atual
-    const deslocamento = -(posicaoAtual * (100 / imagens.length));
-    carrosselSlide.style.transform = `translateX(${deslocamento}%)`;
-  }
-  
-  // Adicionar eventos aos botões
-  botaoAnterior.addEventListener('click', () => moverCarrossel('anterior'));
-  botaoProximo.addEventListener('click', () => moverCarrossel('proximo'));
-  
-  // Ajustar o carrossel quando a janela for redimensionada
-  window.addEventListener('resize', () => {
-    const novoItensPorPagina = atualizarItensPorPagina();
-    if (novoItensPorPagina !== itensPorPagina) {
-      itensPorPagina = novoItensPorPagina;
-      
-      // Reajustar a largura do slide
-      carrosselSlide.style.width = `${(100 / itensPorPagina) * imagens.length}%`;
-      
-      // Reajustar a largura de cada item
-      const itemWidth = 100 / imagens.length;
-      Array.from(carrosselSlide.querySelectorAll('.carrossel-item')).forEach(item => {
-        item.style.width = `${itemWidth}%`;
-      });
-      
-      // Voltar para a primeira página
-      posicaoAtual = 0;
-      carrosselSlide.style.transform = 'translateX(0%)';
-    }
+    iniciarAutoPlay();
   });
+  
+  // Iniciar autoplay
+  iniciarAutoPlay();
 }
-
-// Adicionar a inicialização do carrossel ao carregamento da página
-document.addEventListener('DOMContentLoaded', function() {
-  inicializarMapa();
-  inicializarBotaoTopo();
-  inicializarCarrossel();
-});
 
 // Função para inicializar o menu responsivo
 function inicializarMenuResponsivo() {
@@ -283,15 +333,6 @@ function inicializarMenuResponsivo() {
   });
 }
 
-// Adicionar a inicialização do menu responsivo ao carregamento da página
-document.addEventListener('DOMContentLoaded', function() {
-  inicializarMapa();
-  inicializarBotaoTopo();
-  inicializarCarrossel();
-  inicializarMenuResponsivo();
-  injetarInformacoesVersao(); // Adicionar a nova função à inicialização
-});
-
 function injetarInformacoesVersao() {
   // Verificar se as variáveis do arquivo versao.js estão disponíveis
   if (typeof versao !== 'undefined') {
@@ -309,19 +350,11 @@ function injetarInformacoesVersao() {
   }
 }
 
-// Manter apenas uma chamada para o evento DOMContentLoaded (linhas 290-296)
+// Inicialização única quando o documento estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
   inicializarMapa();
   inicializarBotaoTopo();
   inicializarCarrossel();
   inicializarMenuResponsivo();
-  injetarInformacoesVersao(); // Adicionar a nova função à inicialização
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  inicializarMapa();
-  inicializarBotaoTopo();
-  inicializarCarrossel();
-  inicializarMenuResponsivo();
-  injetarInformacoesVersao(); // Adicionar a nova função à inicialização
+  injetarInformacoesVersao();
 });
