@@ -1,14 +1,25 @@
+:root {
+    --header: #34495e;
+    --section: #234e7f;
+    --body: #003366;
+    --azul-marinho: #1C2526; /* Azul escuro da barra superior */
+    --branco-suave: #FFFFFF; /* Branco para o texto, ajustado para contraste */
+    --azul-claro: #4A90E2; /* Azul claro para destaques, mantido como na sua paleta */
+    --coral-suave: #FF6F61; /* Pode ser removido ou ajustado, não aparece na imagem */
+    --cinza-neutro: #6B7280; /* Cinza da barra de navegação */
+}
+
 body {
     font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
     padding: 0;
-    color: #E0E0E0; /* Texto claro */
-    background-color: #003366; /* Azul marinho suave */
+    color: var(--branco-suave);
+    background-color: var(--body);
     line-height: 1.6;
 }
 
 header {
-    background: #34495e;
+    background: var(--header);
     padding: 1.5em 2em;
     display: flex;
     align-items: center;
@@ -30,7 +41,7 @@ nav ul {
 }
 
 nav ul li a {
-    color: #ecf0f1;
+    color: var(--branco-suave);
     text-decoration: none;
     font-weight: 700;
     font-size: 1.1em;
@@ -38,12 +49,12 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: #FCAF17; /* Laranja dourado */
+    color: var(--azul-claro);
 }
 
 section {
     padding: 3em 2em;
-    background: #234e7f; /* Azul claro */
+    background: var(--section);
     margin: 1em auto;
     max-width: 1200px;
     border-radius: 8px;
@@ -51,7 +62,7 @@ section {
 }
 
 section h1, section h2 {
-    color: white;
+    color: var(--branco-suave);
 }
 
 .galeria img {
@@ -75,8 +86,8 @@ section h1, section h2 {
 
 .tooltip {
     position: absolute;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
+    background: var(--azul-marinho);
+    color: var(--branco-suave);
     padding: 5px 10px;
     border-radius: 4px;
     display: none;
@@ -85,45 +96,14 @@ section h1, section h2 {
 }
 
 footer {
-    background: #34495e;
-    color: #fff;
+    background: var(--azul-marinho);
+    color: var(--branco-suave);
     text-align: center;
     padding: 1.5em 2em;
     margin-top: 2em;
     font-size: 0.9em;
 }
 
-/* Botão Voltar ao Topo */
-/* #botao-topo {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 99;
-    width: 50px;
-    height: 50px;
-    background-color: #FCAF17; /* Laranja dourado 
-    color: white;
-    border: none;
-    border-radius: 50%;
-    text-align: center;
-    text-decoration: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    transition: background-color 0.3s;
-} 
-
-#botao-topo:hover {
-    background-color: #FF7F32; /* Laranja vibrante 
-    cursor: pointer;
-}
-
-.seta-cima {
-    font-size: 24px;
-    line-height: 50px;
-    display: block;
-}*/
-
-/* Ajuste para o botão Voltar ao Topo, igual à seta Next do carrossel */
 #botao-topo {
     display: none;
     position: fixed;
@@ -132,48 +112,55 @@ footer {
     z-index: 99;
     width: 50px;
     height: 50px;
-    background-color: #fff; /* Cor de fundo branco, igual ao botão Next */
-    color: #333; /* Cor escura para o ícone */
-    border: 2px solid #333; /* Borda escura igual ao estilo do botão Next */
+    background-color: #fff;  /* Cor de fundo normal */
+    color: #2c3e50;  /* Cor do ícone */
+    border: none;
     border-radius: 50%;
     text-align: center;
     line-height: 50px;
     font-size: 24px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 #botao-topo:hover {
-    background-color: #333; /* Fundo escuro no hover */
-    color: #fff; /* Texto branco ao passar o mouse */
-    border-color: #fff; /* Borda branca no hover */
+    background-color: #4A90E2;  /* Azul para hover */
+    color: white;  /* Cor do ícone ao passar o mouse */
+    transform: scale(1.1);
 }
 
-.seta-cima {
+/* Garantir que o ícone da seta fique centralizado dentro do botão */
+#botao-topo i {
     font-size: 24px;
+    line-height: 0;
 }
 
-/* Ajuste para os ícones dentro do botão */
-#botao-topo svg {
-    fill: #333; /* Cor escura para o ícone */
-    transition: fill 0.3s;
+#botao-topo .seta-cima {
+    font-size: 24px;
+    color: #2c3e50; /* Cor da seta */
+    margin: 0; /* Remove qualquer margem que possa desalinhar */
+    padding: 0; /* Remove qualquer padding */
 }
 
-#botao-topo:hover svg {
-    fill: #fff; /* Ícone branco quando hover */
+/* Corrigindo o hover para não ficar laranja, mantendo a cor desejada */
+#botao-topo:hover .seta-cima {
+    color: white; /* Cor da seta ao passar o mouse */
 }
 
-
-/* Menu Responsivo */
 .menu-toggle {
     display: none;
     background: none;
     border: none;
-    color: white;
+    color: var(--azul-claro);
     font-size: 24px;
     cursor: pointer;
 }
 
-/* Media query para dispositivos móveis */
 @media (max-width: 768px) {
     header {
         flex-wrap: wrap;
@@ -204,7 +191,6 @@ footer {
     }
 }
 
-/* Estilos para a seção de contatos */
 .contatos-whatsapp p {
     margin: 15px 0;
     display: flex;
@@ -219,7 +205,7 @@ footer {
 }
 
 .contatos-whatsapp a {
-    color: #25D366; /* Cor verde do WhatsApp */
+    color: #25D366;
     text-decoration: none;
     font-weight: bold;
     font-size: 16px;
@@ -229,12 +215,11 @@ footer {
     text-decoration: underline;
 }
 
-/* Ajuste nos links e botões */
 a, .menu-toggle, #botao-topo {
-    color: #FCAF17; /* Laranja dourado */
+    color: var(--azul-claro);
     transition: color 0.3s ease;
 }
 
 a:hover, .menu-toggle:hover, #botao-topo:hover {
-    color: #FF7F32; /* Laranja vibrante */
+    color: var(--coral-suave);
 }
