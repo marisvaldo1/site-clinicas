@@ -325,7 +325,15 @@ function inicializarMenuResponsivo() {
   // Fechar o menu ao clicar em um link
   const links = nav.querySelectorAll('a');
   links.forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
       if (window.innerWidth <= 768) {
         nav.classList.remove('active');
       }
